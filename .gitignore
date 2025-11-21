@@ -20,3 +20,4 @@ onboarding.config.json
 *.pem
 *.key
 *.log
+*_report.json
