@@ -82,3 +82,5 @@ Repoet er satt opp med en GitHub Actions-workflow som:
 - kompilerer alle .py-filer (`python -m compileall .`).
 
 Dette er nok til å vise at prosjektet er testbart og byggbart uten ekstra oppsett.
+Dette er et uoffisielt open source-verktøy laget på eget initiativ for å gjøre arbeid med NAV-API-er enklere i praksis. 
+Verktøyet er ikke bestilt eller driftet av NAV, men kan brukes som støtteverktøy av utviklere og integrasjonspartnere.
