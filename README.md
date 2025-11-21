@@ -84,3 +84,7 @@ Repoet er satt opp med en GitHub Actions-workflow som:
 Dette er nok til å vise at prosjektet er testbart og byggbart uten ekstra oppsett.
 Dette er et uoffisielt open source-verktøy laget på eget initiativ for å gjøre arbeid med NAV-API-er enklere i praksis. 
 Verktøyet er ikke bestilt eller driftet av NAV, men kan brukes som støtteverktøy av utviklere og integrasjonspartnere.
+
+## Hvorfor dette er nyttig for NAV
+
+Dette verktøyet lar integrasjonspartnere verifisere egen onboarding før NAV involveres. Det gir strukturerte rapporter på tilgjengelighet, statuskoder og responstider for både partner- og NAV-endepunkter. NAV får bedre innsikt i hva som faktisk feiler, mindre support-støy og raskere vei til stabile integrasjoner.
