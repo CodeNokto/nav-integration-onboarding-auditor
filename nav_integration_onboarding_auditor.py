@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-\"\"\"NAV Integration Onboarding Auditor.
+"""NAV Integration Onboarding Auditor.
 
 CLI-verktøy for å auditere:
 - token-oppsett (Maskinporten/Azure AD),
@@ -7,7 +7,7 @@ CLI-verktøy for å auditere:
 - NAV-endepunkter.
 
 Brukes sammen med en JSON-config som beskriver miljø, partnere og NAV-API-er.
-\"\"\"
+"""
 
 import argparse
 import json
@@ -20,7 +20,6 @@ from typing import Any, Dict, List, Optional
 
 import jwt
 import requests
-
 
 
 @dataclass
@@ -72,7 +71,6 @@ class EnvironmentConfig:
 class OnboardingConfig:
     default_env: str
     environments: Dict[str, EnvironmentConfig]
-
 
 
 def _load_json(path: Path) -> Any:
@@ -178,12 +176,10 @@ def parse_config(path: Path) -> OnboardingConfig:
     return OnboardingConfig(default_env=str(default_env), environments=envs)
 
 
-
 def _load_private_key(path: Path) -> str:
     if not path.is_file():
         raise FileNotFoundError(f"Fant ikke privat nøkkel-fil: {path}")
     return path.read_text(encoding="utf-8")
-
 
 
 def _build_maskinporten_assertion(mp: MaskinportenConfig) -> str:
@@ -204,7 +200,6 @@ def _build_maskinporten_assertion(mp: MaskinportenConfig) -> str:
     if isinstance(assertion, bytes):
         assertion = assertion.decode("utf-8")
     return assertion
-
 
 
 def _request_maskinporten_token(mp: MaskinportenConfig) -> Dict[str, Any]:
@@ -243,7 +238,6 @@ def _request_azure_token(az: AzureAdConfig) -> Dict[str, Any]:
     return token_data
 
 
-
 def cmd_tokens(args: argparse.Namespace) -> int:
     cfg = parse_config(Path(args.config))
     env_name = args.env or cfg.default_env
@@ -252,7 +246,7 @@ def cmd_tokens(args: argparse.Namespace) -> int:
         print(f"Ukjent miljø: {env_name}", file=sys.stderr)
         return 1
 
-    results = []
+    results: List[Dict[str, Any]] = []
     all_ok = True
 
     if env.maskinporten:
@@ -333,13 +327,12 @@ def cmd_tokens(args: argparse.Namespace) -> int:
     return 0 if all_ok else 1
 
 
-
-def _audit_service(env_name: str, service_type: str, svc: ServiceConfig, token: Optional[str]):
+def _audit_service(env_name: str, service_type: str, svc: ServiceConfig, token: Optional[str]) -> Dict[str, Any]:
     headers = {"Accept": "application/json"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
-    checks = []
+    checks: List[Dict[str, Any]] = []
     all_ok = True
 
     if svc.health_path:
@@ -416,7 +409,9 @@ def _audit_service(env_name: str, service_type: str, svc: ServiceConfig, token: 
                 }
             )
             if ok:
-                print(f"[OK] {service_type} {svc.name} {ep.method} {url} -> {resp.status_code} ({elapsed_ms:.1f} ms)")
+                print(
+                    f"[OK] {service_type} {svc.name} {ep.method} {url} -> {resp.status_code} ({elapsed_ms:.1f} ms)"
+                )
             else:
                 all_ok = False
                 print(
@@ -441,7 +436,10 @@ def _audit_service(env_name: str, service_type: str, svc: ServiceConfig, token: 
                 }
             )
             all_ok = False
-            print(f"[ERROR] {service_type} {svc.name} {ep.method} {url} feilet: {e}", file=sys.stderr)
+            print(
+                f"[ERROR] {service_type} {svc.name} {ep.method} {url} feilet: {e}",
+                file=sys.stderr,
+            )
 
     summary = {
         "env": env_name,
@@ -452,7 +450,6 @@ def _audit_service(env_name: str, service_type: str, svc: ServiceConfig, token: 
         "failed": sum(1 for c in checks if not c.get("ok")),
     }
     return {"summary": summary, "checks": checks, "ok": all_ok}
-
 
 
 def _get_token_for_env(env: EnvironmentConfig, prefer: Optional[str]) -> Optional[str]:
@@ -467,7 +464,6 @@ def _get_token_for_env(env: EnvironmentConfig, prefer: Optional[str]) -> Optiona
         return None
 
     return str(token_data["access_token"])
-
 
 
 def cmd_partner(args: argparse.Namespace) -> int:
@@ -501,7 +497,6 @@ def cmd_partner(args: argparse.Namespace) -> int:
     return 0 if result["ok"] else 1
 
 
-
 def cmd_nav(args: argparse.Namespace) -> int:
     cfg = parse_config(Path(args.config))
     env_name = args.env or cfg.default_env
@@ -531,7 +526,6 @@ def cmd_nav(args: argparse.Namespace) -> int:
         print(f"NAV-rapport skrevet til {out_path}")
 
     return 0 if result["ok"] else 1
-
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -602,7 +596,6 @@ def build_parser() -> argparse.ArgumentParser:
     p_nav.set_defaults(func=cmd_nav)
 
     return parser
-
 
 
 def main(argv: Optional[List[str]] = None) -> None:
